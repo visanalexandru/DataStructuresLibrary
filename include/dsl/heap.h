@@ -51,13 +51,29 @@ namespace dsl {
     }
 
     template<class type>
-    inline heap<type>::heap():count(0) {
+    inline heap<type>::heap():count(0),data(1) {
 
     }
 
     template<class type>
     inline type heap<type>::top() const {
         return data[1];
+    }
+
+    template<class type>
+    inline void heap<type>::percolate(unsigned int node) {
+        unsigned f=father(node);
+        if(f>0 && data[node]>data[f]){
+            std::swap(data[f],data[node]);
+            percolate(f);
+        }
+    }
+
+    template <class type>
+    inline void heap<type>::push(type value) {
+        data.push_back(value);
+        count++;
+        percolate(count);
     }
 
     template<class type>
