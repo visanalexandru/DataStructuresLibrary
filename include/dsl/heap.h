@@ -16,10 +16,14 @@ namespace dsl {
 
         void shift(unsigned node);
 
+        void percolate(unsigned node);
+
         unsigned count;
 
     public:
         void build(const std::vector<type> &p);//builds the heap from a vector
+
+        void push(type value);
 
         type top() const; //returns the minimum element
 
