@@ -21,7 +21,8 @@ namespace dsl {
         unsigned count;
 
     public:
-        void build(const std::vector<type> &p);//builds the heap from a vector
+        template<class Iter>
+        void build(Iter first,Iter second);//builds the heap from a container
 
         void push(type value);
 
@@ -99,10 +100,11 @@ namespace dsl {
     }
 
     template<class type>
-    inline void heap<type>::build(const std::vector<type> &p) {
-        data.resize(p.size() + 1);
-        std::copy(p.begin(), p.end(), data.begin() + 1);
-        count= p.size();
+    template<class Iter>
+    inline void heap<type>::build(Iter first,Iter last) {
+        data.resize(1);
+        data.insert(data.end(),first,last);
+        count=data.size()-1;
 
         for (unsigned i = count/2; i >= 1; i--) {
             shift(i);
