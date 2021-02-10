@@ -22,7 +22,7 @@ namespace dsl {
 
     public:
         template<class Iter>
-        void build(Iter first,Iter second);//builds the heap from a container
+        void build(Iter first,Iter last);//builds the heap from a container
 
         void push(type value);
 
