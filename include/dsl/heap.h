@@ -26,6 +26,8 @@ namespace dsl {
 
         void push(type value);
 
+        void clear();
+
         type top() const; //returns the minimum element
 
         unsigned size() const;
@@ -109,6 +111,12 @@ namespace dsl {
         for (unsigned i = count/2; i >= 1; i--) {
             shift(i);
         }
+    }
+
+    template<class type>
+    inline void heap<type>::clear() {
+        data.resize(1);
+        count=0;
     }
 }
 
