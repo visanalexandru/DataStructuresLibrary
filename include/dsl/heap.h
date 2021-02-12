@@ -58,7 +58,7 @@ namespace dsl {
     }
 
     template<class type>
-    inline heap<type>::heap():count(0),data(1) {
+    inline heap<type>::heap():data(1),count(0) {
 
     }
 
