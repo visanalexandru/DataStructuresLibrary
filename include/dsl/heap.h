@@ -34,6 +34,8 @@ namespace dsl {
 
         unsigned size() const;
 
+        bool empty() const;
+
         heap();
     };
 
@@ -127,6 +129,11 @@ namespace dsl {
         data.pop_back();
         count--;
         shift(1);
+    }
+
+    template <class type>
+    inline bool heap<type>::empty() const {
+        return count==0;
     }
 }
 
