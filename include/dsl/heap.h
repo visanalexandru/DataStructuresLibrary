@@ -22,7 +22,7 @@ namespace dsl {
 
     public:
         template<class Iter>
-        void build(Iter first,Iter last);//builds the heap from a container
+        void build(Iter first, Iter last);//builds the heap from a container
 
         void push(type value);
 
@@ -52,13 +52,13 @@ namespace dsl {
         return (node << 1u) + 1;
     }
 
-    template <class type>
+    template<class type>
     inline unsigned int heap<type>::size() const {
         return count;
     }
 
     template<class type>
-    inline heap<type>::heap():data(1),count(0) {
+    inline heap<type>::heap():data(1), count(0) {
 
     }
 
@@ -69,14 +69,14 @@ namespace dsl {
 
     template<class type>
     inline void heap<type>::percolate(unsigned int node) {
-        unsigned f=father(node);
-        if(f>0 && data[node]>data[f]){
-            std::swap(data[f],data[node]);
+        unsigned f = father(node);
+        if (f > 0 && data[node] > data[f]) {
+            std::swap(data[f], data[node]);
             percolate(f);
         }
     }
 
-    template <class type>
+    template<class type>
     inline void heap<type>::push(type value) {
         data.push_back(value);
         count++;
@@ -107,12 +107,12 @@ namespace dsl {
 
     template<class type>
     template<class Iter>
-    inline void heap<type>::build(Iter first,Iter last) {
+    inline void heap<type>::build(Iter first, Iter last) {
         data.resize(1);
-        data.insert(data.end(),first,last);
-        count=data.size()-1;
+        data.insert(data.end(), first, last);
+        count = data.size() - 1;
 
-        for (unsigned i = count/2; i >= 1; i--) {
+        for (unsigned i = count / 2; i >= 1; i--) {
             shift(i);
         }
     }
@@ -120,20 +120,20 @@ namespace dsl {
     template<class type>
     inline void heap<type>::clear() {
         data.resize(1);
-        count=0;
+        count = 0;
     }
 
     template<class type>
     inline void heap<type>::pop() {
-        data[1]=data[count];
+        data[1] = data[count];
         data.pop_back();
         count--;
         shift(1);
     }
 
-    template <class type>
+    template<class type>
     inline bool heap<type>::empty() const {
-        return count==0;
+        return count == 0;
     }
 }
 
