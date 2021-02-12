@@ -26,6 +26,8 @@ namespace dsl {
 
         void push(type value);
 
+        void pop();
+
         void clear();
 
         type top() const; //returns the minimum element
@@ -117,6 +119,14 @@ namespace dsl {
     inline void heap<type>::clear() {
         data.resize(1);
         count=0;
+    }
+
+    template<class type>
+    inline void heap<type>::pop() {
+        data[1]=data[count];
+        data.pop_back();
+        count--;
+        shift(1);
     }
 }
 
