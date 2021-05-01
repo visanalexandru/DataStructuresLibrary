@@ -8,12 +8,13 @@
 #include<vector>
 
 namespace dsl {
-    template<class type>
+    template<class type, class compare=std::less<type>>
 
     class heap {
     private:
         std::vector<type> data;
         size_t count;
+        compare comparator;
 
         /* Returns the index of the left son of the node */
         size_t left_son(size_t node) {
@@ -39,16 +40,16 @@ namespace dsl {
 
                 best = l;
 
-                /* If it also has a right-node then we have to take the child node with the maximum value */
+                /* If it also has a right-node then we have to take the child node with the best value */
 
                 if (r <= count) {
-                    best = (data[l] > data[r]) ? l : r;
+                    best = comparator(data[l],data[r]) ? r : l;
                 }
 
-                /* If the value of the best child node is greater than the value of this node, we swap the
+                /* If the value of the best child node is better than the value of this node, we swap the
                  * two nodes and continue the process*/
 
-                if (data[best] > data[node]) {
+                if (comparator(data[node],data[best])) {
                     std::swap(data[node], data[best]);
                     shift(best);
                 }
@@ -59,10 +60,10 @@ namespace dsl {
         void percolate(size_t node) {
             size_t ft = father(node);
 
-            /* If this is not the root node and its value is greater than the value of its parent,
+            /* If this is not the root node and its value is better than the value of its parent,
              * swap the two values and continue the process */
 
-            if (ft != 0 && data[node] > data[ft]) {
+            if (ft != 0 && comparator(data[ft] , data[node])) {
                 std::swap(data[node], data[ft]);
                 percolate(ft);
             }
