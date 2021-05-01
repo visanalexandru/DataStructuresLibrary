@@ -48,7 +48,7 @@ namespace dsl {
                 /* If the value of the best child node is greater than the value of this node, we swap the
                  * two nodes and continue the process*/
 
-                if (data[node] < data[best]) {
+                if (data[best] > data[node]) {
                     std::swap(data[node], data[best]);
                     shift(best);
                 }
