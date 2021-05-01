@@ -13,26 +13,26 @@ namespace dsl {
     class heap {
     private:
         std::vector<type> data;
-        unsigned count;
+        size_t count;
 
         /* Returns the index of the left son of the node */
-        unsigned left_son(unsigned node) {
+        size_t left_son(size_t node) {
             return node << 1u;
         }
 
         /* Returns the index of the right son of the node */
-        unsigned right_son(unsigned node) {
+        size_t right_son(size_t node) {
             return (node << 1u) + 1;
         }
 
         /* Returns the index of the father of the node */
-        unsigned father(unsigned node) {
+        size_t father(size_t node) {
             return node >> 1u;
         }
 
         /* This method shifts the node down the tree, comparing its value with the value of its children */
-        void shift(unsigned node) {
-            unsigned best = 0, l = left_son(node), r = right_son(node);
+        void shift(size_t node) {
+            size_t best, l = left_son(node), r = right_son(node);
 
             /* Check if the node is not a leaf node*/
             if (l <= count) {
@@ -56,8 +56,8 @@ namespace dsl {
         }
 
         /* This method lifts the node up the tree, comparing its value with the value of its father */
-        void percolate(unsigned node) {
-            unsigned ft = father(node);
+        void percolate(size_t node) {
+            size_t ft = father(node);
 
             /* If this is not the root node and its value is greater than the value of its parent,
              * swap the two values and continue the process */
@@ -85,13 +85,13 @@ namespace dsl {
             count = data.size() - 1;
 
             /* Now we build the heap */
-            for (unsigned node = count / 2; node >= 1; node--) {
+            for (size_t node = count / 2; node >= 1; node--) {
                 shift(node);
             }
         }
 
         /* This method returns the size of the heap */
-        unsigned size() {
+        size_t size() {
             return count;
         }
 
