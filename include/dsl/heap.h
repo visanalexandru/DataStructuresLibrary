@@ -120,6 +120,11 @@ namespace dsl {
             return data[1];
         }
 
+        /* Remove all the elements of the heap */
+        void clear() {
+            data.resize(1);
+            count = 0;
+        }
     };
 }
 
