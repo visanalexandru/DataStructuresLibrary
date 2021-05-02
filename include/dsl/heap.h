@@ -64,7 +64,7 @@ namespace dsl {
             /* If this is not the root node and its value is better than the value of its parent,
              * swap the two values and continue the process */
 
-            if (ft != 0 && comparator(data[ft] , data[node])) {
+            if (ft != 0 && comparator(data[ft], data[node])) {
                 std::swap(data[node], data[ft]);
                 percolate(ft);
             }
