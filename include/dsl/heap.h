@@ -44,13 +44,13 @@ namespace dsl {
                 /* If it also has a right-node then we have to take the child node with the best value */
 
                 if (r <= count) {
-                    best = comparator(data[l],data[r]) ? r : l;
+                    best = comparator(data[l], data[r]) ? r : l;
                 }
 
                 /* If the value of the best child node is better than the value of this node, we swap the
                  * two nodes and continue the process*/
 
-                if (comparator(data[node],data[best])) {
+                if (comparator(data[node], data[best])) {
                     std::swap(data[node], data[best]);
                     shift(best);
                 }
@@ -93,12 +93,12 @@ namespace dsl {
         }
 
         /* This method returns the size of the heap */
-        size_t size() {
+        size_t size() const {
             return count;
         }
 
         /* This method is used to check if the heap is empty*/
-        bool empty() {
+        bool empty() const {
             return count == 0;
         }
 
@@ -111,14 +111,14 @@ namespace dsl {
 
         /* This method removes the root of the heap */
         void pop() {
-            data[1]=data[count];
+            data[1] = data[count];
             data.pop_back();
             count--;
             shift(1);
         }
 
         /* This method returns the value of the root */
-        type top() {
+        type top() const {
             return data[1];
         }
 
