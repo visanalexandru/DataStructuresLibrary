@@ -111,7 +111,7 @@ namespace dsl {
 
         /* This method removes the root of the heap */
         void pop() {
-            std::swap(data[1], data[count]);
+            data[1]=data[count];
             data.pop_back();
             count--;
             shift(1);
