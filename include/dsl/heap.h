@@ -6,6 +6,7 @@
 #define DSL_HEAP_H
 
 #include<vector>
+#include<functional>
 
 namespace dsl {
     template<class type, class compare=std::less<type>>
