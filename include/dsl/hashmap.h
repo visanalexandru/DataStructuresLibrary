@@ -11,8 +11,8 @@
 #include<cstddef>
 
 namespace dsl {
+    /* This is an implementation of a hashmap class that uses linear probing to solve collisions.*/
     template<class key, class value, class hash=std::hash<key>, class equal=std::equal_to<key>>
-
     class hashmap {
     private:
 
@@ -48,6 +48,7 @@ namespace dsl {
         };
 
         /* This is the iterator for the hashmap*/
+        /* Iterating through the map returns the elements in a seemingly random order */
         struct iterator {
             friend class hashmap;
 
@@ -86,7 +87,7 @@ namespace dsl {
                 return *this;
             }
 
-            /* Pos-increment, same as pre-increment, but return the value before the increment */
+            /* Post-increment, same as pre-increment, but return the value before the increment */
             iterator operator++(int) {
                 iterator tmp = *this;
 
@@ -182,6 +183,13 @@ namespace dsl {
         /* Checks if the hashmap is empty */
         bool empty() const {
             return count == 0;
+        }
+
+        /*Clears the hashmap, by removing all the elements from all the buckets */
+        void clear() {
+            for (size_t i = 0; i < num_buckets; i++)
+                buckets[i].clear();
+            count = 0;
         }
 
     };
