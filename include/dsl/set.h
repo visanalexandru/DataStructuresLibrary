@@ -44,6 +44,7 @@ namespace dsl {
             /* Left-rotation in the tree */
             void rotate_left(node *&here) {
                 node *left = here->left;
+                left->parent = here->parent;
                 here->left = left->right;
 
                 if (left->right != nil)
@@ -58,6 +59,7 @@ namespace dsl {
             /*Right-rotation in the tree */
             void rotate_right(node *&here) {
                 node *right = here->right;
+                right->parent = here->parent;
                 here->right = right->left;
 
                 if (right->left != nil) {
