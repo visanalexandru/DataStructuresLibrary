@@ -29,6 +29,118 @@ namespace dsl {
             }
         };
 
+        /* The tree structure */
+        struct tree {
+        public:
+            /* The root of the tree */
+            node *root;
+
+            /* A dummy node, used to mark the end of the container */
+            node *nil;
+
+            /*The comparator, used to compare keys */
+            compare comparator;
+
+            /* Left-rotation in the tree */
+            void rotate_left(node *&here) {
+                node *left = here->left;
+                here->left = left->right;
+
+                if (left->right != nil)
+                    left->right->parent = here;
+
+                left->right = here;
+                here->parent = left;
+
+                here = left;
+            }
+
+            /*Right-rotation in the tree */
+            void rotate_right(node *&here) {
+                node *right = here->right;
+                here->right = right->left;
+
+                if (right->left != nil) {
+                    right->left->parent = here;
+                }
+
+                right->left = here;
+                here->parent = right;
+
+                here = right;
+            }
+
+            /* This method returns the node with the minimum value in the given subtree */
+            node *tree_minimum(node *here) {
+                while (here->left != nil) {
+                    here = here->left;
+                }
+                return here;
+            }
+
+            /* This method returns the node with the maximum value in the given subtree */
+            node *tree_maximum(node *here) {
+                while (here->right != nil) {
+                    here = here->right;
+                }
+                return here;
+            }
+
+            /* Balance to keep the heap property of the priorities */
+            void balance(node *&n) {
+                if (n->left->priority > n->priority) {
+                    rotate_left(n);
+                } else if (n->right->priority > n->priority) {
+                    rotate_right(n);
+                }
+            }
+
+            /* Insert a new node with the given key */
+            void insert(node *&here, node *parent, const key &key_value) {
+                if (here == nil) {
+                    here = new node(key_value, rand() + 1, nil, nil, parent);
+                } else if (comparator(key_value, here->key_value)) {
+                    insert(here->left, here, key_value);
+                } else {
+                    insert(here->right, here, key_value);
+                }
+                balance(here);
+            }
+
+            /* Erase the given node from the tree */
+            void erase(node *&here) {
+                if (here == nil)
+                    return;
+                if (here->left == nil && here->right == nil) {
+                    delete here;
+                    here = nil;
+                } else {
+                    (here->left->priority > here->right->priority) ? rotate_left(here) : rotate_right(here);
+                    erase(here);
+                }
+            }
+
+            /* Find the node with the given key. It there is none return nil */
+            node *find(node *here, const key &key_value) {
+                if (here == nil)
+                    return nil;
+
+                /* First checking for equality */
+                if (!comparator(key_value, here->key_value) && !comparator(here->key_value, key_value)) {
+                    return here;
+                } else if (comparator(key_value, here->key_value)) {
+                    return find(here->left, key_value);
+                } else {
+                    return find(here->right, key_value);
+                }
+            }
+
+            tree() {
+                nil = new node(0, 0, nullptr, nullptr, nullptr);
+                root = nil; //The root of the tree is currently nil
+            }
+        };
+
         /* This is the iterator for the set. It returns values in the order defined by the comparator.*/
         struct iterator {
             friend class set;
@@ -60,138 +172,32 @@ namespace dsl {
             node *h_node;
         };
 
-        /* The root of the tree */
-        node *root;
-
-        /* A dummy node, used to mark the end of the container */
-        node *nil;
-
-        /*The comparator, used to compare keys */
-        compare comparator;
-
-        /* Left-rotation in the treap */
-        void rotate_left(node *&here) {
-            node *left = here->left;
-            here->left = left->right;
-
-            if (left->right != nil)
-                left->right->parent = here;
-
-            left->right = here;
-            here->parent = left;
-
-            here = left;
-        }
-
-        /*Right-rotation in the treap */
-        void rotate_right(node *&here) {
-            node *right = here->right;
-            here->right = right->left;
-
-            if (right->left != nil) {
-                right->left->parent = here;
-            }
-
-            right->left = here;
-            here->parent = right;
-
-            here = right;
-        }
-
-        /* This method returns the node with the minimum value in the given subtree */
-        node *tree_minimum(node *here) {
-            while (here->left != nil) {
-                here = here->left;
-            }
-            return here;
-        }
-
-        /* This method returns the node with the maximum value in the given subtree */
-        node *tree_maximum(node *here) {
-            while (here->right != nil) {
-                here = here->right;
-            }
-            return here;
-        }
-
-        /* Balance to keep the heap property of the priorities */
-        void balance(node *&n) {
-            if (n->left->priority > n->priority) {
-                rotate_left(n);
-            } else if (n->right->priority > n->priority) {
-                rotate_right(n);
-            }
-        }
-
-        /* Insert a new node with the given key */
-        void insert(node *&here, node *parent, const key &key_value) {
-            if (here == nil) {
-                here = new node(key_value, rand() + 1, nil, nil, parent);
-            } else if (comparator(key_value, here->key_value)) {
-                insert(here->left, here, key_value);
-            } else {
-                insert(here->right, here, key_value);
-            }
-            balance(here);
-        }
-
-        /* Erase the given node from the tree */
-        void erase(node *&here) {
-            if (here == nil)
-                return;
-            if (here->left == nil && here->right == nil) {
-                delete here;
-                here = nil;
-            } else {
-                (here->left->priority > here->right->priority) ? rotate_left(here) : rotate_right(here);
-                erase(here);
-            }
-        }
-
-        /* Find the node with the given key. It there is none return nil */
-        node *find(node *here, const key &key_value) {
-            if (here == nil)
-                return nil;
-
-            /* First checking for equality */
-            if (!comparator(key_value, here->key_value) && !comparator(here->key_value, key_value)) {
-                return here;
-            } else if (comparator(key_value, here->key_value)) {
-                return find(here->left, key_value);
-            } else {
-                return find(here->right, key_value);
-            }
-        }
+        tree structure;
 
     public:
-        set() {
-            nil = new node(0, 0, nullptr, nullptr, nullptr);
-            root = nil;
-        }
-
         /* The smallest node of the tree */
         iterator begin() {
-            return iterator(tree_minimum(root));
+            return iterator(structure.tree_minimum(structure.root));
         }
 
         /* Returns an iterator with a nil handle */
         iterator end() {
-            return iterator(nil);
+            return iterator(structure.nil);
         }
 
         /*Insert a new node with the given key by calling the recursive insert method */
         void insert(const key &key_value) {
-            insert(root, nil, key_value);
+            structure.insert(structure.root, structure.nil, key_value);
         }
 
         /* Returns an iterator that points to the node with the given key */
         iterator find(const key &key_value) {
-            return iterator(find(root, key_value));
+            return iterator(structure.find(structure.root, key_value));
         }
 
         /* Erase node by iterator */
         void erase(iterator to_erase) {
-            erase(to_erase.h_node);
+            structure.erase(to_erase.h_node);
         }
 
     };
