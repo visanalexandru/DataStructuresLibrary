@@ -191,8 +191,7 @@ namespace dsl {
             using pointer = const key *;  // or also value_type*
             using reference = const key &;  // or also value_type&
 
-            explicit iterator(node *here) : h_node(here) {
-
+            explicit iterator(node *here, tree *structure) : h_node(here), h_structure(structure) {
 
             }
 
@@ -204,12 +203,50 @@ namespace dsl {
                 return &h_node->key_value;
             }
 
+            // Prefix increment
+            iterator &operator++() {
+                h_node = h_structure->tree_successor(h_node);
+                return *this;
+            }
+
+            // Postfix increment
+            iterator operator++(int) {
+                iterator tmp = *this;
+                h_node = h_structure->tree_successor(h_node);
+                return tmp;
+            }
+
+            // Prefix decrement
+            iterator &operator--() {
+
+                if (h_node == h_structure->nil) { //If its the end iterator, jump to the greatest value in the tree
+                    h_node = h_structure->tree_maximum(h_structure->root);
+                } else {
+                    h_node = h_structure->tree_predecessor(h_node);
+                }
+                return *this;
+            }
+
+            // Postfix decrement
+            iterator operator--(int) {
+                iterator tmp = *this;
+
+                if (h_node == h_structure->nil) { //If its the end iterator, jump to the greatest value in the tree
+                    h_node = h_structure->tree_maximum(h_structure->root);
+                } else {
+                    h_node = h_structure->tree_predecessor(h_node);
+                }
+                return tmp;
+            }
+
             friend bool operator==(const iterator &a, const iterator &b) { return a.h_node == b.h_node; };
 
             friend bool operator!=(const iterator &a, const iterator &b) { return a.h_node != b.h_node; };
 
         private:
             node *h_node;
+
+            tree *h_structure;//a reference to the tree structure
         };
 
         tree structure;
@@ -217,12 +254,12 @@ namespace dsl {
     public:
         /* The smallest node of the tree */
         iterator begin() {
-            return iterator(structure.tree_minimum(structure.root));
+            return iterator(structure.tree_minimum(structure.root), &structure);
         }
 
         /* Returns an iterator with a nil handle */
         iterator end() {
-            return iterator(structure.nil);
+            return iterator(structure.nil, &structure);
         }
 
         /*Insert a new node with the given key by calling the recursive insert method */
@@ -232,7 +269,7 @@ namespace dsl {
 
         /* Returns an iterator that points to the node with the given key */
         iterator find(const key &key_value) {
-            return iterator(structure.find(structure.root, key_value));
+            return iterator(structure.find(structure.root, key_value), &structure);
         }
 
         /* Erase node by iterator */
