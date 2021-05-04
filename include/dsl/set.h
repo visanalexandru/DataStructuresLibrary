@@ -41,6 +41,9 @@ namespace dsl {
             /*The comparator, used to compare keys */
             compare comparator;
 
+            /* The number of nodes in the tree structure */
+            size_t count;
+
             /* Left-rotation in the tree */
             void rotate_left(node *&here) {
                 node *left = here->left;
@@ -132,6 +135,7 @@ namespace dsl {
             void insert(node *&here, node *parent, const key &key_value) {
                 if (here == nil) {
                     here = new node(key_value, rand() + 1, nil, nil, parent);
+                    count++;
                     return;
                 }
 
@@ -154,6 +158,7 @@ namespace dsl {
                 if (here->left == nil && here->right == nil) {
                     delete here;
                     here = nil;
+                    count--;
                 } else {
                     (here->left->priority > here->right->priority) ? rotate_left(here) : rotate_right(here);
                     erase(here);
@@ -175,9 +180,32 @@ namespace dsl {
                 }
             }
 
-            tree() {
+            tree():count(0) {
                 nil = new node(0, 0, nullptr, nullptr, nullptr);
                 root = nil; //The root of the tree is currently nil
+            }
+
+
+            /* Cleanup, recursively delete nodes */
+            void destroy_tree(node *here) {
+                if (here == nil)
+                    return;
+                destroy_tree(here->left);
+                destroy_tree(here->right);
+
+                delete here;
+            }
+
+            /* Clear the container by deleting all nodes ans resetting the root to the nil pointer */
+            void clear() {
+                destroy_tree(root);
+                root = nil;
+                count = 0;
+            }
+
+            ~tree() {
+                clear();
+                delete nil;// Don't forget to delete the nil node
             }
         };
 
@@ -244,6 +272,7 @@ namespace dsl {
             friend bool operator!=(const iterator &a, const iterator &b) { return a.h_node != b.h_node; };
 
         private:
+            /* The position of the iterator in the tree */
             node *h_node;
 
             tree *h_structure;//a reference to the tree structure
@@ -254,6 +283,9 @@ namespace dsl {
     public:
         /* The smallest node of the tree */
         iterator begin() {
+            if (structure.root == structure.nil) // If the root is nil, return nil
+                return iterator(structure.nil, &structure);
+
             return iterator(structure.tree_minimum(structure.root), &structure);
         }
 
@@ -275,6 +307,21 @@ namespace dsl {
         /* Erase node by iterator */
         void erase(iterator to_erase) {
             structure.erase(to_erase.h_node);
+        }
+
+        /* Returns the number of elements in the set */
+        size_t size() const {
+            return structure.count;
+        }
+
+        /* Checks if the container is empty */
+        bool empty() const {
+            return structure.count == 0;
+        }
+
+        /* Clear the tree structure */
+        void clear() {
+            structure.clear();
         }
 
     };
