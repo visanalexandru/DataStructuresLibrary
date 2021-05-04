@@ -324,6 +324,14 @@ namespace dsl {
         tree structure;
 
     public:
+        /* Delete the copy assignment operator and the copy constructor as they are not yet implemented */
+        set(const set &) = delete;
+
+        set &operator=(const set &) = delete;
+
+        /* Define a default constructor */
+        set() = default;
+
         /* The smallest node of the tree */
         iterator begin() {
             if (structure.root == structure.nil) // If the root is nil, return nil
