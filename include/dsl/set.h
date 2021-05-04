@@ -148,6 +148,7 @@ namespace dsl {
             }
         }
 
+        /* Find the node with the given key. It there is none return nil */
         node *find(node *here, const key &key_value) {
             if (here == nil)
                 return nil;
