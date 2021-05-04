@@ -165,7 +165,7 @@ namespace dsl {
                         count--;
                     } else {//We rotate it while keeping the heap property and continue downwards
                         (here->left->priority > here->right->priority) ? rotate_left(here) : rotate_right(here);
-                        erase(here,to_delete);
+                        erase(here, to_delete);
                     }
                     return;
                 }
@@ -192,7 +192,38 @@ namespace dsl {
                 }
             }
 
-            tree():count(0) {
+            /* Returns the first node that does not go before the value.*/
+            /* Either it is equivalent, or goes after */
+            /* If there is no such element, return nil */
+
+            node *lower_bound(node *here, const key &key_value) {
+                if (here == nil)
+                    return nil;
+                if (comparator(here->key_value, key_value)) {
+                    return lower_bound(here->right, key_value);
+                }
+                node *ans = lower_bound(here->left, key_value);
+                if (ans != nil)
+                    return ans;
+                return here;
+            }
+
+            /* Returns the first node that goes after the value */
+            node *upper_bound(node *here, const key &key_value) {
+                if (here == nil)
+                    return nil;
+
+                if (comparator(key_value, here->key_value)) {
+                    node *ans = upper_bound(here->left, key_value);
+                    if (ans != nil)
+                        return ans;
+                    return here;
+                }
+
+                return upper_bound(here->right, key_value);
+            }
+
+            tree() : count(0) {
                 nil = new node(0, 0, nullptr, nullptr, nullptr);
                 root = nil; //The root of the tree is currently nil
             }
@@ -316,9 +347,17 @@ namespace dsl {
             return iterator(structure.find(structure.root, key_value), &structure);
         }
 
+        iterator lower_bound(const key &value) {
+            return iterator(structure.lower_bound(structure.root, value), &structure);
+        }
+
+        iterator upper_bound(const key &value) {
+            return iterator(structure.upper_bound(structure.root, value), &structure);
+        }
+
         /* Erase node by iterator */
         void erase(iterator to_erase) {
-            structure.erase(structure.root,to_erase.h_node);
+            structure.erase(structure.root, to_erase.h_node);
         }
 
         /* Returns the number of elements in the set */
