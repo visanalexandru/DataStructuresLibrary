@@ -132,7 +132,14 @@ namespace dsl {
             void insert(node *&here, node *parent, const key &key_value) {
                 if (here == nil) {
                     here = new node(key_value, rand() + 1, nil, nil, parent);
-                } else if (comparator(key_value, here->key_value)) {
+                    return;
+                }
+
+                /* Check for equality first */
+                if (!comparator(key_value, here->key_value) && !comparator(here->key_value, key_value))
+                    return;
+
+                if (comparator(key_value, here->key_value)) {
                     insert(here->left, here, key_value);
                 } else {
                     insert(here->right, here, key_value);
