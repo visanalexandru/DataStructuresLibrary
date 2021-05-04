@@ -152,16 +152,28 @@ namespace dsl {
             }
 
             /* Erase the given node from the tree */
-            void erase(node *&here) {
+            void erase(node *&here, node *to_delete) {
                 if (here == nil)
                     return;
-                if (here->left == nil && here->right == nil) {
-                    delete here;
-                    here = nil;
-                    count--;
+
+                if (!comparator(to_delete->key_value, here->key_value) &&
+                    !comparator(here->key_value, to_delete->key_value)) {
+                    /* We found a match */
+                    if (here->left == nil && here->right == nil) {//This is a leaf node, so delete it
+                        delete here;
+                        here = nil;
+                        count--;
+                    } else {//We rotate it while keeping the heap property and continue downwards
+                        (here->left->priority > here->right->priority) ? rotate_left(here) : rotate_right(here);
+                        erase(here,to_delete);
+                    }
+                    return;
+                }
+
+                if (comparator(to_delete->key_value, here->key_value)) {
+                    erase(here->left, to_delete);
                 } else {
-                    (here->left->priority > here->right->priority) ? rotate_left(here) : rotate_right(here);
-                    erase(here);
+                    erase(here->right, to_delete);
                 }
             }
 
@@ -306,7 +318,7 @@ namespace dsl {
 
         /* Erase node by iterator */
         void erase(iterator to_erase) {
-            structure.erase(to_erase.h_node);
+            structure.erase(structure.root,to_erase.h_node);
         }
 
         /* Returns the number of elements in the set */
