@@ -88,6 +88,37 @@ namespace dsl {
                 return here;
             }
 
+            /* Returns the successor of the node. If no such node exists, return nil */
+            node *tree_successor(node *x) {
+                if (x->right != nil) { //Its successor is the minimum node in its right subtree
+                    return tree_minimum(x->right);
+                }
+
+                //Search up the tree
+                node *y = x->parent;
+                while (y != nil && x == y->right) {
+                    x = y;
+                    y = y->parent;
+                }
+                return y;
+            }
+
+            /* Same as tree_successor but return the node that precedes the given node*/
+            node *tree_predecessor(node *x) {
+                if (x->left != nil) { //Its predecessor is the maximum node in its right subtree
+                    return tree_maximum(x->left);
+                }
+
+                //Search up the tree
+                node *y = x->parent;
+                while (y != nil && x == y->left) {
+                    x = y;
+                    y = y->parent;
+                }
+                return y;
+            }
+
+
             /* Balance to keep the heap property of the priorities */
             void balance(node *&n) {
                 if (n->left->priority > n->priority) {
