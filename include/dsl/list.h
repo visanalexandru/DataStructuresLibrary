@@ -6,6 +6,7 @@
 #define DSL_LIST_H
 
 #include<iterator> //for std::forward_iterator tag
+#include<utility> //for std::swap
 
 namespace dsl {
     template<class type>
@@ -133,7 +134,7 @@ namespace dsl {
 
         /* Move constructor, just swap the two lists */
         list(list &&other) noexcept: count(0) {
-            swap(*this, other);
+            swap(other);
         }
 
         /* Swap the two lists by swapping their corresponding pointers*/
