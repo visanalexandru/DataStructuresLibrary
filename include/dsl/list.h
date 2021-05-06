@@ -125,6 +125,17 @@ namespace dsl {
             first = here;
         }
 
+        /* Copy assignment operator */
+        list &operator=(list other) {
+            swap(other);
+            return *this;
+        }
+
+        /* Move constructor, just swap the two lists */
+        list(list &&other) noexcept: count(0) {
+            swap(*this, other);
+        }
+
         /* Swap the two lists by swapping their corresponding pointers*/
         void swap(list &other) {
             std::swap(first, other.first);
