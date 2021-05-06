@@ -99,7 +99,7 @@ namespace dsl {
                 delete here;
                 here = next;
             }
-            last->previous= nullptr;
+            last->previous = nullptr;
             first = last;
         }
 
@@ -108,6 +108,28 @@ namespace dsl {
         list() : count(0) {
             last = new node();
             first = last;
+        }
+
+        /* Copy constructor, make a copy of the other list */
+        list(const list &other) : count(other.count) {
+            last = new node();
+            node *here = last, *current = other.last;
+
+            while (current != other.first) {
+                node *copy = new node(current->previous->value);
+                here->previous = copy;
+                copy->next = here;
+                here = copy;
+                current = current->previous;
+            }
+            first = here;
+        }
+
+        /* Swap the two lists by swapping their corresponding pointers*/
+        void swap(list &other) {
+            std::swap(first, other.first);
+            std::swap(last, other.last);
+            std::swap(count, other.count);
         }
 
         /* Destructor, don't forget to delete the last node*/
@@ -130,14 +152,14 @@ namespace dsl {
         /* Return an iterator to the newly created value */
         iterator insert(iterator position, const type &value) {
             node *to_add = new node(value);
-            node *next=position.h_node;
+            node *next = position.h_node;
 
             to_add->next = next;
             to_add->previous = next->previous;
 
             next->previous = to_add;
 
-            if (next== first) {
+            if (next == first) {
                 first = to_add;
             } else to_add->previous->next = to_add;
 
@@ -186,7 +208,7 @@ namespace dsl {
 
         /* Returns a reference to the element */
         /* It is undefined behaviour to call this function when the list is emtpy */
-        type&back(){
+        type &back() {
             return last->previous->value;
         }
 
