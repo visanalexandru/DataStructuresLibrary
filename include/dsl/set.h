@@ -242,9 +242,9 @@ namespace dsl {
                 }
 
                 node *copy_node = new node(here->key_value, here->priority, nullptr, nullptr, nullptr);
-                copy_node->left=nil;
-                copy_node->right=nil;
-                copy_node->parent=nil;
+                copy_node->left = nil;
+                copy_node->right = nil;
+                copy_node->parent = nil;
 
                 /* Copy the left subtree */
                 node *left = copy(here->left, nil_marker);
@@ -261,10 +261,23 @@ namespace dsl {
                 return copy_node;
             }
 
+            /* Swap the tree structure with another tree structure */
+            void swap(tree &other) {
+                std::swap(nil, other.nil);
+                std::swap(root, other.root);
+                std::swap(count, other.count);
+            }
+
             /* Copy-construct the tree structure */
             tree(const tree &other) : count(other.count) {
                 nil = new node(0, 0, nullptr, nullptr, nullptr);
                 root = copy(other.root, other.nil);
+            }
+
+            /* Copy assignment operator */
+            tree &operator=(const tree other) {
+                swap(other);
+                return *this;
             }
 
 
@@ -370,13 +383,22 @@ namespace dsl {
             tree *h_structure;//a reference to the tree structure
         };
 
+        /** Copy constructor, make a copy of the other set. */
         set(const set &other) : structure(other.structure) {
 
         }
 
-        set &operator=(const set &) = delete;
+        /** Assigns new contents to the set, replacing its current contents.*/
+        set &operator=(set other) {
+            swap(other);
+            return *this;
+        }
 
-        /* Define a default constructor */
+        /** Swaps the content of this set with another set.*/
+        void swap(set &other) {
+            structure.swap(other.structure);
+        }
+
         set() = default;
 
         /** Returns an iterator to the first element in the set. */
