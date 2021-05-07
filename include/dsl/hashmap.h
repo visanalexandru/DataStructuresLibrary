@@ -70,11 +70,12 @@ namespace dsl {
 
             }
 
-            /** De-referencing the iterator returns a pair of key and value. The key should not be modified. **/
+            /** De-references the iterator. The key should not be modified. **/
             reference operator*() const {
                 return (*h_node.bucket_iterator)[h_node.element_index];
             };
 
+            /** De-references the iterator. The key should not be modified. **/
             pointer operator->() {
                 return &((*h_node.bucket_iterator)[h_node.element_index]);
             }
@@ -111,13 +112,13 @@ namespace dsl {
                 return tmp;
             }
 
-            /** Checking if two iterators are equal is checking if they
-             ** are located in the same bucket, and point at the same element */
+            /** Checks if two iterators are equal. */
             friend bool operator==(const iterator &a, const iterator &b) {
                 return a.h_node.bucket_iterator == b.h_node.bucket_iterator &&
                        a.h_node.element_index == b.h_node.element_index;
             };
 
+            /** Checks if two iterators are not equal. */
             friend bool operator!=(const iterator &a, const iterator &b) {
                 return a.h_node.bucket_iterator != b.h_node.bucket_iterator ||
                        a.h_node.element_index != b.h_node.element_index;
