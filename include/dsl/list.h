@@ -9,6 +9,10 @@
 #include<utility> //for std::swap
 
 namespace dsl {
+    /**
+     * This class is an implementation of a doubly linked list.
+     * @tparam type The type of a value of an entry in the list.
+     */
     template<class type>
     class list {
     private:
@@ -52,7 +56,9 @@ namespace dsl {
         }
 
     public:
-        /* The iterator for the list, used to return elements in the order they were added in the list */
+        /** This is the iterator for the list.
+         *  Iterating through the list returns elements in the order they were inserted.
+         */
         struct iterator {
             friend class list;
 
@@ -66,39 +72,43 @@ namespace dsl {
 
             }
 
+            /** De-references the iterator. */
             reference operator*() const { return h_node->value; }
 
+            /** De-references the iterator. */
             pointer operator->() { return &h_node->value; }
 
 
-            /* Prefix increment, just move the node forward */
+            /** Prefix increment, just move to the next element in the list. */
             iterator &operator++() {
                 h_node = h_node->next;
                 return *this;
             }
 
-            /* Same as prefix increment, but return the value before the increment */
+            /** Same as prefix increment, but return the value before the increment. */
             iterator operator++(int) {
                 iterator tmp = *this;
                 h_node = h_node->next;
                 return tmp;
             }
 
-            /* Prefix decrement, just move the node backwards */
+            /** Prefix decrement, just move to the previous element in the list. */
             iterator &operator--() {
                 h_node = h_node->previous;
                 return *this;
             }
 
-            /* Same as prefix decrement, but return the value before the increment */
+            /** Same as prefix decrement, but return the value before the decrement.*/
             iterator operator--(int) {
                 iterator tmp = *this;
                 h_node = h_node->previous;
                 return tmp;
             }
 
+            /** Checks if two iterators are equal. */
             friend bool operator==(const iterator &a, const iterator &b) { return a.h_node == b.h_node; };
 
+            /** Checks if two iterators are not equal. */
             friend bool operator!=(const iterator &a, const iterator &b) { return a.h_node != b.h_node; };
 
         private:
@@ -111,7 +121,7 @@ namespace dsl {
             first = last;
         }
 
-        /* Copy constructor, make a copy of the other list */
+        /** Copy constructor, make a copy of the other list. */
         list(const list &other) : count(other.count) {
             last = new node();
             node *here = last, *current = other.last;
@@ -126,42 +136,43 @@ namespace dsl {
             first = here;
         }
 
-        /* Copy assignment operator */
+        /** Assigns new contents to the list, replacing its current contents.*/
         list &operator=(list other) {
             swap(other);
             return *this;
         }
 
-        /* Move constructor, just swap the two lists */
+        /** Swaps the content of this list with the content of the rvalue list. */
         list(list &&other) noexcept: count(0) {
             swap(other);
         }
 
-        /* Swap the two lists by swapping their corresponding pointers*/
+        /** Swaps the content of this list with another list.*/
         void swap(list &other) {
             std::swap(first, other.first);
             std::swap(last, other.last);
             std::swap(count, other.count);
         }
 
-        /* Destructor, don't forget to delete the last node*/
+        /** Destroys the list object.*/
         ~list() {
             destroy_list();
             delete last;
         }
 
-        /* Returns an iterator that points to the beginning of the list */
+        /** Returns an iterator that points to the beginning of the list. */
         iterator begin() {
             return iterator(first);
         }
 
-        /* Returns an iterator that points to the end of the list */
+        /** Returns an iterator that points to the end of the list. */
         iterator end() {
             return iterator(last);
         }
 
-        /* Inserts the given value before the element at the specified position*/
-        /* Return an iterator to the newly created value */
+        /** Inserts the given value before the element at the specified position.
+         *
+         * It returns an iterator to the newly inserted element. */
         iterator insert(iterator position, const type &value) {
             node *to_add = new node(value);
             node *next = position.h_node;
@@ -179,8 +190,10 @@ namespace dsl {
             return iterator(to_add);
         }
 
-        /* Erase the node at the specified position */
-        /* Return an iterator to the element that followed the erased element */
+        /** Erases the element at the specified position.
+         *
+         * It returns an iterator to the element that followed the erased element.
+         */
         iterator erase(iterator position) {
             node *to_erase = position.h_node;
             node *next = to_erase->next;
@@ -196,30 +209,34 @@ namespace dsl {
             return iterator(next);
         }
 
-        /* Returns the number of elements in the list */
+        /** Returns the number of elements in the list. */
         size_t size() const {
             return count;
         }
 
-        /* Checks if the list is empty */
+        /** Checks if the list is empty. */
         bool empty() const {
             return count == 0;
         }
 
-        /* Removes all the elements from the list */
+        /** Removes all the elements from the list. */
         void clear() {
             destroy_list();
             count = 0;
         }
 
-        /* Returns a reference to the first element */
-        /* Calling this function when the list is empty results in undefined behaviour */
+        /** Returns a reference to the first element.
+         *
+         * Calling this function when the list is empty results in undefined behaviour. */
         type &front() {
             return first->value;
         }
 
-        /* Returns a reference to the element */
-        /* It is undefined behaviour to call this function when the list is emtpy */
+        /**
+         * Returns a reference to the last element.
+         *
+         * Calling this function when the list is empty results in undefined behaviour.*/
+
         type &back() {
             return last->previous->value;
         }
