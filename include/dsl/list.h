@@ -30,6 +30,28 @@ namespace dsl {
             }
         };
 
+        /* This node is used to mark the end of the list*/
+        node *last;
+
+        /* The first node of the list */
+        node *first;
+
+        /* The number of elements in the list */
+        size_t count;
+
+        /* Delete the nodes of the list, don't delete the end node */
+        void destroy_list() {
+            node *here = first;
+            while (here != last) {
+                node *next = here->next;
+                delete here;
+                here = next;
+            }
+            last->previous = nullptr;
+            first = last;
+        }
+
+    public:
         /* The iterator for the list, used to return elements in the order they were added in the list */
         struct iterator {
             friend class list;
@@ -83,28 +105,6 @@ namespace dsl {
             /* The position of the iterator in the list */
             node *h_node;
         };
-
-        /* This node is used to mark the end of the list*/
-        node *last;
-
-        /* The first node of the list */
-        node *first;
-
-        /* The number of elements in the list */
-        size_t count;
-
-        void destroy_list() {
-            node *here = first;
-            while (here != last) {
-                node *next = here->next;
-                delete here;
-                here = next;
-            }
-            last->previous = nullptr;
-            first = last;
-        }
-
-    public:
 
         list() : count(0) {
             last = new node();
