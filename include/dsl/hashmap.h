@@ -11,7 +11,11 @@
 #include<cstddef>
 
 namespace dsl {
-    /* This is an implementation of a hashmap class that uses linear probing to solve collisions.*/
+    /**
+     * This is an implementation of a hashmap class that uses linear probing to solve collisions.
+     *
+     * It uses buckets of std::vector to store the values. Iterating through the hashmap returns the elements in a seemingly random order.
+     */
     template<class key, class value, class hash=std::hash<key>, class equal=std::equal_to<key>>
     class hashmap {
     private:
@@ -45,8 +49,8 @@ namespace dsl {
         };
 
     public:
-        /* This is the iterator for the hashmap*/
-        /* Iterating through the map returns the elements in a seemingly random order */
+        /** This is the iterator for the hashmap.
+        Iterating through the map returns the elements in a seemingly random order. **/
         struct iterator {
             friend class hashmap;
 
@@ -61,7 +65,7 @@ namespace dsl {
 
             }
 
-            /*De-referencing the iterator returns a pair of key and value. The key should not be modified */
+            /** De-referencing the iterator returns a pair of key and value. The key should not be modified. **/
             reference operator*() const {
                 return (*h_node.bucket_iterator)[h_node.element_index];
             };
@@ -70,7 +74,7 @@ namespace dsl {
                 return &((*h_node.bucket_iterator)[h_node.element_index]);
             }
 
-            /* Incrementing this iterator is finding the next value, skipping empty buckets */
+            /** Incrementing this iterator is finding the next value, skipping empty buckets **/
             iterator &operator++() {
                 h_node.element_index++;
 
@@ -85,7 +89,7 @@ namespace dsl {
                 return *this;
             }
 
-            /* Post-increment, same as pre-increment, but return the value before the increment */
+            /** Post-increment, same as pre-increment, but return the value before the increment **/
             iterator operator++(int) {
                 iterator tmp = *this;
 
@@ -102,8 +106,8 @@ namespace dsl {
                 return tmp;
             }
 
-            /* Checking if two iterators are equal is checking if they
-             * are located in the same bucket, and point at the same element */
+            /** Checking if two iterators are equal is checking if they
+             ** are located in the same bucket, and point at the same element */
             friend bool operator==(const iterator &a, const iterator &b) {
                 return a.h_node.bucket_iterator == b.h_node.bucket_iterator &&
                        a.h_node.element_index == b.h_node.element_index;
@@ -122,8 +126,8 @@ namespace dsl {
 
         }
 
-        /* This method finds the first element of the map, by iterating through the buckets
-         * until a non-empty bucket is found */
+        /** This method finds the first element of the map, by iterating through the buckets,
+         ** until a non-empty bucket is found. */
         iterator begin() {
             for (auto iter = buckets.begin(); iter != buckets.end(); iter++) {
                 if (iter->size() != 0) {
@@ -133,13 +137,13 @@ namespace dsl {
             return iterator({buckets.end(), 0, buckets.end()});
         }
 
-        /* Returns the end iterator */
+        /** Returns an iterator to the end of the map. **/
         iterator end() {
             return iterator({buckets.end(), 0, buckets.end()});
         }
 
-        /* Returns an iterator to the element identified by the key */
-        /* If no element has the given key, return the end iterator */
+        /** Returns an iterator to the element identified by the key.
+        If no element has the given key, return the end iterator. */
         iterator find(key id) {
             size_t h = hasher(id) % num_buckets; //The index of the bucket
 
@@ -150,8 +154,8 @@ namespace dsl {
             return end();
         }
 
-        /* Inserts a new element into the hashmap */
-        /* If the key is already in the hashmap, don't modify it's value */
+        /** Inserts a new element into the hashmap.
+        If the key is already in the hashmap, don't modify its value.*/
         void insert(const std::pair<key, value> &element) {
             size_t h = hasher(element.first) % num_buckets; // The index of the bucket
 
@@ -163,8 +167,8 @@ namespace dsl {
             buckets[h].push_back(element);
         }
 
-        /* Erases the element at the given iterator*/
-        /* If iterator is not valid, the behaviour is undefined */
+        /** Erases the element at the given iterator.
+        If the iterator is not valid, the behaviour is undefined. */
         void erase(iterator it) {
             auto bucket = it.h_node.bucket_iterator;
             std::vector<std::pair<key, value>> &ref = *bucket;
@@ -173,17 +177,17 @@ namespace dsl {
             count--;
         }
 
-        /* Returns the number of elements in the hashmap*/
+        /** Returns the number of elements in the hashmap.*/
         size_t size() const {
             return count;
         }
 
-        /* Checks if the hashmap is empty */
+        /** Checks if the hashmap is empty. */
         bool empty() const {
             return count == 0;
         }
 
-        /*Clears the hashmap, by removing all the elements from all the buckets */
+        /**Clears the hashmap, by removing all the elements from all the buckets. */
         void clear() {
             for (size_t i = 0; i < num_buckets; i++)
                 buckets[i].clear();
