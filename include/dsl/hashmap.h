@@ -15,7 +15,7 @@ namespace dsl {
     /**
      * This is an implementation of a hashmap that uses linear probing to solve collisions.
      *
-     * It uses buckets of std::vector to store values. Iterating through the hashmap returns the elements in a seemingly random order.
+     * It uses buckets of std::vector to store values.
      * @tparam key The type of the key value of an entry.
      * @tparam value The type of the mapped value of an entry.
      * @tparam hash A unary function object, used to retrieve the hash code of a key to order elements into buckets.
