@@ -252,6 +252,9 @@ namespace dsl {
             }
         };
 
+        tree structure;
+    public:
+
         /* This is the iterator for the set. It returns values in the order defined by the comparator.*/
         struct iterator {
             friend class set;
@@ -321,9 +324,6 @@ namespace dsl {
             tree *h_structure;//a reference to the tree structure
         };
 
-        tree structure;
-
-    public:
         /* Delete the copy assignment operator and the copy constructor as they are not yet implemented */
         set(const set &) = delete;
 
