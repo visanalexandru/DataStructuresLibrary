@@ -233,6 +233,41 @@ namespace dsl {
             }
 
 
+            /* Deep-copy the tree, return the root of the tree*/
+            /* We pass the nil value of the other node to identify nil nodes */
+            node *copy(const node *here, const node *nil_marker) {
+
+                if (here == nil_marker) {
+                    return nil;
+                }
+
+                node *copy_node = new node(here->key_value, here->priority, nullptr, nullptr, nullptr);
+                copy_node->left=nil;
+                copy_node->right=nil;
+                copy_node->parent=nil;
+
+                /* Copy the left subtree */
+                node *left = copy(here->left, nil_marker);
+                copy_node->left = left;
+                if (left != nil)
+                    left->parent = copy_node;
+
+                /*Copy the right subtree */
+                node *right = copy(here->right, nil_marker);
+                copy_node->right = right;
+                if (right != nil)
+                    right->parent = copy_node;
+
+                return copy_node;
+            }
+
+            /* Copy-construct the tree structure */
+            tree(const tree &other) : count(other.count) {
+                nil = new node(0, 0, nullptr, nullptr, nullptr);
+                root = copy(other.root, other.nil);
+            }
+
+
             /* Cleanup, recursively delete nodes */
             void destroy_tree(node *here) {
                 if (here == nil)
@@ -335,8 +370,9 @@ namespace dsl {
             tree *h_structure;//a reference to the tree structure
         };
 
-        /* Delete the copy assignment operator and the copy constructor as they are not yet implemented */
-        set(const set &) = delete;
+        set(const set &other) : structure(other.structure) {
+
+        }
 
         set &operator=(const set &) = delete;
 
