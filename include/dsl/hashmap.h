@@ -131,7 +131,7 @@ namespace dsl {
 
         }
 
-        /** This method finds the first element of the map, by iterating through the buckets,
+        /** Finds the first element of the map, by iterating through the buckets,
          ** until a non-empty bucket is found. */
         iterator begin() {
             for (auto iter = buckets.begin(); iter != buckets.end(); iter++) {

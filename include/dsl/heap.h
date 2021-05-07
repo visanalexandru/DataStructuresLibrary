@@ -9,6 +9,14 @@
 #include<functional>
 
 namespace dsl {
+    /** This is an implementation of a priority queue, using a heap structure.
+     *
+     * It uses the std::vector container to hold the elements.
+     *
+     * @tparam type The type of the value of an entry in the heap.
+     * @tparam compare A binary predicate that defines a strict weak ordering, used to order the elements.\n The expression compare(a,b) shall return true if a is considered to go before b.
+     *
+     */
     template<class type, class compare=std::less<type>>
 
     class heap {
@@ -76,9 +84,9 @@ namespace dsl {
 
         }
 
-        /* Constructs a heap from a container. First and last are iterators to the given container.
-         * This method first inserts its contents and then sorts the heap */
-
+        /**
+         * Constructs the heap by inserting the elements in the range [first,last) and then sorting the heap.
+         */
         template<class Iter>
         heap(Iter first, Iter last) {
             data.resize(1);
@@ -92,24 +100,32 @@ namespace dsl {
             }
         }
 
-        /* This method returns the size of the heap */
+        /**
+         * Returns the number of elements in the heap.
+         */
         size_t size() const {
             return count;
         }
 
-        /* This method is used to check if the heap is empty*/
+        /**
+         * Checks if the heap is emtpy.
+         */
         bool empty() const {
             return count == 0;
         }
 
-        /* This method adds a new value into the heap */
+        /**
+         * Inserts a new value into the heap.
+         */
         void push(type value) {
             data.push_back(value);
             count++;
             percolate(count);
         }
 
-        /* This method removes the root of the heap */
+        /**
+         * Removes the top element from the heap.
+         */
         void pop() {
             data[1] = data[count];
             data.pop_back();
@@ -117,12 +133,16 @@ namespace dsl {
             shift(1);
         }
 
-        /* This method returns the value of the root */
+        /**
+         * Returns the value of the top element of the heap.
+         */
         type top() const {
             return data[1];
         }
 
-        /* Remove all the elements of the heap */
+        /**
+         * Removes all elements from the heap.
+         */
         void clear() {
             data.resize(1);
             count = 0;
