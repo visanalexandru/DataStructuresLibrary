@@ -10,8 +10,12 @@
 
 namespace dsl {
 
-    /*This class is an implementation of a ordered set using a treap data structure. It holds
-     * the elements in the order given by the comparator */
+    /**
+     * This class is an implementation of an ordered set using a treap data structure.
+     *
+     * @tparam key The type of the value of an entry in the set.
+     * @tparam compare A binary predicate that defines a strict weak ordering, used to order the elements.\n The expression compare(a,b) shall return true if a is considered to go before b.
+     */
 
     template<class key, class compare=std::less<key>>
     class set {
@@ -255,7 +259,10 @@ namespace dsl {
         tree structure;
     public:
 
-        /* This is the iterator for the set. It returns values in the order defined by the comparator.*/
+        /**
+         * This is the iterator for the set.
+         * Iterating through the set returns the elements in the order defined by the compare predicate
+         */
         struct iterator {
             friend class set;
 
@@ -269,28 +276,30 @@ namespace dsl {
 
             }
 
+            /** De-references the iterator. */
             reference operator*() const {
                 return h_node->key_value;
             }
 
+            /** De-references the iterator. */
             pointer operator->() {
                 return &h_node->key_value;
             }
 
-            // Prefix increment
+            /** Incrementing this iterator is finding the successor of the element the iterator points at. */
             iterator &operator++() {
                 h_node = h_structure->tree_successor(h_node);
                 return *this;
             }
 
-            // Postfix increment
+            /** Post-increment, same as pre-increment, but return the value before the increment. */
             iterator operator++(int) {
                 iterator tmp = *this;
                 h_node = h_structure->tree_successor(h_node);
                 return tmp;
             }
 
-            // Prefix decrement
+            /** Decrementing this iterator is finding the successor of the element the iterator points at. */
             iterator &operator--() {
 
                 if (h_node == h_structure->nil) { //If its the end iterator, jump to the greatest value in the tree
@@ -301,7 +310,7 @@ namespace dsl {
                 return *this;
             }
 
-            // Postfix decrement
+            /** Post-decrement, same as pre-decrement, but return the value before the decrement. */
             iterator operator--(int) {
                 iterator tmp = *this;
 
@@ -313,8 +322,10 @@ namespace dsl {
                 return tmp;
             }
 
+            /** Checks if two iterators are equal. */
             friend bool operator==(const iterator &a, const iterator &b) { return a.h_node == b.h_node; };
 
+            /** Checks if two iterators are not equal. */
             friend bool operator!=(const iterator &a, const iterator &b) { return a.h_node != b.h_node; };
 
         private:
@@ -332,7 +343,7 @@ namespace dsl {
         /* Define a default constructor */
         set() = default;
 
-        /* The smallest node of the tree */
+        /** Returns an iterator to the first element in the set. */
         iterator begin() {
             if (structure.root == structure.nil) // If the root is nil, return nil
                 return iterator(structure.nil, &structure);
@@ -340,45 +351,47 @@ namespace dsl {
             return iterator(structure.tree_minimum(structure.root), &structure);
         }
 
-        /* Returns an iterator with a nil handle */
+        /** Returns an iterator that represents the end of the set. */
         iterator end() {
             return iterator(structure.nil, &structure);
         }
 
-        /*Insert a new node with the given key by calling the recursive insert method */
+        /** Insert a new entry with the given key value. **/
         void insert(const key &key_value) {
             structure.insert(structure.root, structure.nil, key_value);
         }
 
-        /* Returns an iterator that points to the node with the given key */
+        /** Returns an iterator that points to the element with the given key. */
         iterator find(const key &key_value) {
             return iterator(structure.find(structure.root, key_value), &structure);
         }
 
+        /** Returns an iterator to the first element which is not considered to go before the given value. */
         iterator lower_bound(const key &value) {
             return iterator(structure.lower_bound(structure.root, value), &structure);
         }
 
+        /** Returns an iterator to the first element which is considered to go after the given value. */
         iterator upper_bound(const key &value) {
             return iterator(structure.upper_bound(structure.root, value), &structure);
         }
 
-        /* Erase node by iterator */
+        /** Removes an element from the set by iterator. */
         void erase(iterator to_erase) {
             structure.erase(structure.root, to_erase.h_node);
         }
 
-        /* Returns the number of elements in the set */
+        /** Returns the number of elements in the set. */
         size_t size() const {
             return structure.count;
         }
 
-        /* Checks if the container is empty */
+        /** Checks if the container is empty. */
         bool empty() const {
             return structure.count == 0;
         }
 
-        /* Clear the tree structure */
+        /** Removes all the elements from the set. */
         void clear() {
             structure.clear();
         }
