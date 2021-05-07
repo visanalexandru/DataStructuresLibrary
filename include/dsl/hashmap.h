@@ -31,9 +31,6 @@ namespace dsl {
         /* Comparator, used to check if two keys are equal */
         equal comparator;
 
-
-    public:
-
         /* A node in the hashmap */
         struct node {
             /* Bucket iterator */
@@ -47,6 +44,7 @@ namespace dsl {
 
         };
 
+    public:
         /* This is the iterator for the hashmap*/
         /* Iterating through the map returns the elements in a seemingly random order */
         struct iterator {
