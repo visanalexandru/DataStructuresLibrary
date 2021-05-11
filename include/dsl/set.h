@@ -11,10 +11,15 @@
 namespace dsl {
 
     /**
-     * This class is an implementation of an ordered set using a treap data structure.
+     * Aceasta clasa este o implementare a unui set ordonat ce foloseste o structura de date de tip "treap".
      *
-     * @tparam key The type of the value of an entry in the set.
-     * @tparam compare A binary predicate that defines a strict weak ordering, used to order the elements.\n The expression compare(a,b) shall return true if a is considered to go before b.
+     * Elementele din set sunt ordonate dupa valoarea cheii lor.
+     *
+     * Un articol ce explica modul in care functioneaza structura de date de tip "treap" se poate gasi la https://www.infoarena.ro/treapuri.
+     *
+     * @tparam key Tipul valorii unui element din set.
+     *
+     * @tparam compare O clasa ce reprezinta o functie binara ce defineste o ordonare de tip "mai mic strict", folosita pentru a ordona elementele.\n Expresia compare(a,b) trebuie sa returneze true daca a ar trebui sa se afle inaintea lui b.
      */
 
     template<class key, class compare=std::less<key>>
@@ -308,8 +313,8 @@ namespace dsl {
     public:
 
         /**
-         * This is the iterator for the set.
-         * Iterating through the set returns the elements in the order defined by the compare predicate
+         * Aceasta clasa este iteratorul setului.
+         * Parcurgerea setului returneaza elementele in ordinea definita de clasa comparator a setului.
          */
         struct iterator {
             friend class set;
@@ -324,30 +329,30 @@ namespace dsl {
 
             }
 
-            /** De-references the iterator. */
+            /** Obtine o referinta la un element din set. */
             reference operator*() const {
                 return h_node->key_value;
             }
 
-            /** De-references the iterator. */
+            /** Obtine o referinta la un element din set. */
             pointer operator->() {
                 return &h_node->key_value;
             }
 
-            /** Incrementing this iterator is finding the successor of the element the iterator points at. */
+            /** Muta iteratorul la succesorul elementului curent din set. */
             iterator &operator++() {
                 h_node = h_structure->tree_successor(h_node);
                 return *this;
             }
 
-            /** Post-increment, same as pre-increment, but return the value before the increment. */
+            /** Muta iteratorul la succesorul elementului curent din set. */
             iterator operator++(int) {
                 iterator tmp = *this;
                 h_node = h_structure->tree_successor(h_node);
                 return tmp;
             }
 
-            /** Decrementing this iterator is finding the successor of the element the iterator points at. */
+            /** Muta iteratorul la predecesorul elementului curent din set. */
             iterator &operator--() {
 
                 if (h_node == h_structure->nil) { //If its the end iterator, jump to the greatest value in the tree
@@ -358,7 +363,7 @@ namespace dsl {
                 return *this;
             }
 
-            /** Post-decrement, same as pre-decrement, but return the value before the decrement. */
+            /** Muta iteratorul la predecesorul elementului curent din set. */
             iterator operator--(int) {
                 iterator tmp = *this;
 
@@ -370,10 +375,10 @@ namespace dsl {
                 return tmp;
             }
 
-            /** Checks if two iterators are equal. */
+            /** Verifica daca doi iteratori sunt egali. */
             friend bool operator==(const iterator &a, const iterator &b) { return a.h_node == b.h_node; };
 
-            /** Checks if two iterators are not equal. */
+            /** Verifica daca doi iteratori nu sunt egali. */
             friend bool operator!=(const iterator &a, const iterator &b) { return a.h_node != b.h_node; };
 
         private:
@@ -383,25 +388,25 @@ namespace dsl {
             tree *h_structure;//a reference to the tree structure
         };
 
-        /** Copy constructor, make a copy of the other set. */
+        /** Constructor de copiere, creeaza o copie a celuilalt set. */
         set(const set &other) : structure(other.structure) {
 
         }
 
-        /** Assigns new contents to the set, replacing its current contents.*/
+        /** Atribuie un nou continut setului, prin intermediul altui set. Copiaza continutul celuilalt set in setul curent.*/
         set &operator=(set other) {
             swap(other);
             return *this;
         }
 
-        /** Swaps the content of this set with another set.*/
+        /** Interschimba continutul acestui set cu cel al setului dat.*/
         void swap(set &other) {
             structure.swap(other.structure);
         }
 
         set() = default;
 
-        /** Returns an iterator to the first element in the set. */
+        /** Returneaza un iterator ce reprezinta inceputul setului. */
         iterator begin() {
             if (structure.root == structure.nil) // If the root is nil, return nil
                 return iterator(structure.nil, &structure);
@@ -409,47 +414,47 @@ namespace dsl {
             return iterator(structure.tree_minimum(structure.root), &structure);
         }
 
-        /** Returns an iterator that represents the end of the set. */
+        /** Returneaza un iterator ce reprezinta sfarsitul setului. Acest iterator nu trebuie accesat deoarece nu are o referinta la vreun element din set.*/
         iterator end() {
             return iterator(structure.nil, &structure);
         }
 
-        /** Insert a new entry with the given key value. **/
+        /** Insereaza un nou element cu valoarea data in set. **/
         void insert(const key &key_value) {
             structure.insert(structure.root, structure.nil, key_value);
         }
 
-        /** Returns an iterator that points to the element with the given key. If no element with the given key is found in the set, return the end iterator. */
+        /** Returneaza un iterator la elementul cu cheia data. Daca elementul nu este gasit, returneaza iteratorul ce marcheaza sfarsitul setului. */
         iterator find(const key &key_value) {
             return iterator(structure.find(structure.root, key_value), &structure);
         }
 
-        /** Returns an iterator to the first element which is not considered to go before the given value. */
+        /** Returneaza un iterator la primul element a carui valoare nu preceda valoarea data. Elementul poate avea o valoare egala, sau o valoare ce "merge dupa" valoarea data. */
         iterator lower_bound(const key &value) {
             return iterator(structure.lower_bound(structure.root, value), &structure);
         }
 
-        /** Returns an iterator to the first element which is considered to go after the given value. */
+        /** Returneaza un iterator la primul element a carui valoare "merge dupa" valoarea data. */
         iterator upper_bound(const key &value) {
             return iterator(structure.upper_bound(structure.root, value), &structure);
         }
 
-        /** Removes an element from the set by iterator. */
+        /** Sterge elementul de la pozitia specificata de iterator. */
         void erase(iterator to_erase) {
             structure.erase(structure.root, to_erase.h_node);
         }
 
-        /** Returns the number of elements in the set. */
+        /** Returneaza numarul de elemente din set. */
         size_t size() const {
             return structure.count;
         }
 
-        /** Checks if the container is empty. */
+        /** Verifica daca setul este gol. */
         bool empty() const {
             return structure.count == 0;
         }
 
-        /** Removes all the elements from the set. */
+        /** Goleste setul. */
         void clear() {
             structure.clear();
         }
