@@ -13,13 +13,18 @@
 namespace dsl {
 
     /**
-     * This is an implementation of a hashmap that uses linear probing to solve collisions.
+     * Aceasta clasa este o implementare a unei tabele de dispersie ce foloseste o cautare liniara pentru a rezolva coliziuni.
      *
-     * It uses buckets of std::vector to store values.
-     * @tparam key The type of the key value of an entry.
-     * @tparam value The type of the mapped value of an entry.
-     * @tparam hash A unary function object, used to retrieve the hash code of a key to order elements into buckets.
-     * @tparam equal A binary predicate, used to compare two keys for equality.
+     * Un element reprezinta o pereche de tip cheie-valoare.
+     *
+     * Elementele sunt organizate in "bucket"-uri pentru a se stoca valorile in functie de "valoarea hash" a cheii.
+     *
+     * Un articol ce explica sumar conceptul de tabela hash se poate gasi la https://infoarena.ro/tabele-hash-scurta-prezentare.
+     *
+     * @tparam key Tipul cheii unui element in tabela de dispersie.
+     * @tparam value Tipul valorii unui element in tabela de dispersie.
+     * @tparam hash O clasa ce reprezinta o functie unara ce accepta un parametru de tip "key", folosita pentru a genera "valoarea hash" a unei chei.
+     * @tparam equal O clasa ce reprezinta o functie binara ce accepta doi parametrii de tip "key", folosita pentru a verifica daca doua chei sunt egale.
      */
     template<class key, class value, class hash=std::hash<key>, class equal=std::equal_to<key>>
     class hashmap {
@@ -54,8 +59,8 @@ namespace dsl {
         };
 
     public:
-        /** This is the iterator for the hashmap.
-        Iterating through the map returns the elements in a seemingly random order. **/
+        /** Aceasta clasa este iteratorul tabelei de dispersie. Parcurgerea tabelei de dispersie returneaza elementele
+         * intr-o ordine aparent aleatorie. **/
         struct iterator {
             friend class hashmap;
 
@@ -70,17 +75,17 @@ namespace dsl {
 
             }
 
-            /** De-references the iterator. The key should not be modified. **/
+            /** Obtine o referinta la un element din tabela de dispersie. Valoarea cheii este expusa doar ca nu trebuie modificata. **/
             reference operator*() const {
                 return (*h_node.bucket_iterator)[h_node.element_index];
             };
 
-            /** De-references the iterator. The key should not be modified. **/
+            /** Obtine o referinta la un element din tabela de dispersie. Valoarea cheii este expusa doar ca nu trebuie modificata. **/
             pointer operator->() {
                 return &((*h_node.bucket_iterator)[h_node.element_index]);
             }
 
-            /** Incrementing this iterator is finding the next value, skipping empty buckets **/
+            /** Gaseste urmatoarea valoare in tabela de dispersie, sarind peste "bucket"-urile goale. **/
             iterator &operator++() {
                 h_node.element_index++;
 
@@ -95,7 +100,7 @@ namespace dsl {
                 return *this;
             }
 
-            /** Post-increment, same as pre-increment, but return the value before the increment **/
+            /** Gaseste urmatoarea valoare in tabela de dispersie, sarind peste "bucket"-urile goale. **/
             iterator operator++(int) {
                 iterator tmp = *this;
 
@@ -112,13 +117,13 @@ namespace dsl {
                 return tmp;
             }
 
-            /** Checks if two iterators are equal. */
+            /** Verifica daca doi iteratori sunt egali. */
             friend bool operator==(const iterator &a, const iterator &b) {
                 return a.h_node.bucket_iterator == b.h_node.bucket_iterator &&
                        a.h_node.element_index == b.h_node.element_index;
             };
 
-            /** Checks if two iterators are not equal. */
+            /** Verifica daca doi iteratori nu sunt egali. */
             friend bool operator!=(const iterator &a, const iterator &b) {
                 return a.h_node.bucket_iterator != b.h_node.bucket_iterator ||
                        a.h_node.element_index != b.h_node.element_index;
@@ -132,8 +137,7 @@ namespace dsl {
 
         }
 
-        /** Finds the first element of the map, by iterating through the buckets,
-         ** until a non-empty bucket is found. */
+        /** Returneaza un iterator ce reprezinta inceputul tabelei de dispersie, adica o referinta la primul element din tabela.**/
         iterator begin() {
             for (auto iter = buckets.begin(); iter != buckets.end(); iter++) {
                 if (iter->size() != 0) {
@@ -143,13 +147,13 @@ namespace dsl {
             return iterator({buckets.end(), 0, buckets.end()});
         }
 
-        /** Returns an iterator to the end of the map. **/
+        /** Returneaza un iterator ce reprezinta sfarsitul tabelei de dispersie. Acest iterator nu trebuie accesat deoarece nu are o referinta la vreun element din tabela.**/
         iterator end() {
             return iterator({buckets.end(), 0, buckets.end()});
         }
 
-        /** Returns an iterator to the element identified by the key.
-        If no element has the given key, return the end iterator. */
+        /** Returneaza un iterator la elementul ce are cheia data.
+        Daca niciun element nu are cheia data, returneaza iteratorul ce marcheaza sfarsitul tabelei. */
         iterator find(key id) {
             size_t h = hasher(id) % num_buckets; //The index of the bucket
 
@@ -160,8 +164,9 @@ namespace dsl {
             return end();
         }
 
-        /** Inserts a new element into the hashmap.
-        If the key is already in the hashmap, don't modify its value.*/
+        /** Insereaza un nou element in tabela de dispersie.
+        Daca exista deja un element cu cheia data, valoarea sa nu este modificata.*/
+
         void insert(const std::pair<key, value> &element) {
             size_t h = hasher(element.first) % num_buckets; // The index of the bucket
 
@@ -173,8 +178,8 @@ namespace dsl {
             buckets[h].push_back(element);
         }
 
-        /** Erases the element at the given iterator.
-        If the iterator is not valid, the behaviour is undefined. */
+        /** Sterge elementul dat de iteratorul luat ca parametru.
+        Daca iteratorul nu este valid, comportamentul acestei metode nu este definit. */
         void erase(iterator it) {
             auto bucket = it.h_node.bucket_iterator;
             std::vector<std::pair<key, value>> &ref = *bucket;
@@ -183,17 +188,17 @@ namespace dsl {
             count--;
         }
 
-        /** Returns the number of elements in the hashmap.*/
+        /** Returneaza numarul de elemente din tabela de dispersie.*/
         size_t size() const {
             return count;
         }
 
-        /** Checks if the hashmap is empty. */
+        /** Verifica daca tabela de dispersie este goala. */
         bool empty() const {
             return count == 0;
         }
 
-        /**Clears the hashmap, by removing all the elements from all the buckets. */
+        /**Sterge toate elementele din tabela de dispersie. */
         void clear() {
             for (size_t i = 0; i < num_buckets; i++)
                 buckets[i].clear();
