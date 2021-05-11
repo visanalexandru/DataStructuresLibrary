@@ -10,8 +10,8 @@
 
 namespace dsl {
     /**
-     * This class is an implementation of a doubly linked list.
-     * @tparam type The type of a value of an entry in the list.
+     * Aceasta clasa este o implementare a unei liste dublu inlantuite.
+     * @tparam type Tipul valorii unui element din lista.
      */
     template<class type>
     class list {
@@ -56,8 +56,8 @@ namespace dsl {
         }
 
     public:
-        /** This is the iterator for the list.
-         *  Iterating through the list returns elements in the order they were inserted.
+        /** Aceasta clasa este iteratorul listei dublu inlantuite.
+         *  Parcurgerea listei returneaza elementele in ordinea in care au fost inserate in lista.
          */
         struct iterator {
             friend class list;
@@ -72,43 +72,43 @@ namespace dsl {
 
             }
 
-            /** De-references the iterator. */
+            /** Obtine o referinta la un element din lista. */
             reference operator*() const { return h_node->value; }
 
-            /** De-references the iterator. */
+            /** Obtine o referinta la un element din lista. */
             pointer operator->() { return &h_node->value; }
 
 
-            /** Prefix increment, just move to the next element in the list. */
+            /** Muta iteratorul la urmatorul element din lista. */
             iterator &operator++() {
                 h_node = h_node->next;
                 return *this;
             }
 
-            /** Same as prefix increment, but return the value before the increment. */
+            /** Muta iteratorul la urmatorul element din lista. */
             iterator operator++(int) {
                 iterator tmp = *this;
                 h_node = h_node->next;
                 return tmp;
             }
 
-            /** Prefix decrement, just move to the previous element in the list. */
+            /** Muta iteratorul la elementul precedent din lista. */
             iterator &operator--() {
                 h_node = h_node->previous;
                 return *this;
             }
 
-            /** Same as prefix decrement, but return the value before the decrement.*/
+            /** Muta iteratorul la elementul precedent din lista. */
             iterator operator--(int) {
                 iterator tmp = *this;
                 h_node = h_node->previous;
                 return tmp;
             }
 
-            /** Checks if two iterators are equal. */
+            /** Verifica daca doi iteratori sunt egali. */
             friend bool operator==(const iterator &a, const iterator &b) { return a.h_node == b.h_node; };
 
-            /** Checks if two iterators are not equal. */
+            /** Verifica daca doi iteratori nu sunt egali. */
             friend bool operator!=(const iterator &a, const iterator &b) { return a.h_node != b.h_node; };
 
         private:
@@ -121,7 +121,7 @@ namespace dsl {
             first = last;
         }
 
-        /** Copy constructor, make a copy of the other list. */
+        /** Constructor de copiere, creeaza o copie a celeilalte liste. */
         list(const list &other) : count(other.count) {
             last = new node();
             node *here = last, *current = other.last;
@@ -136,43 +136,43 @@ namespace dsl {
             first = here;
         }
 
-        /** Assigns new contents to the list, replacing its current contents.*/
+        /** Atribuie un nou continut listei, prin intermediul altei liste. Copiaza continutul celeilalte liste in lista curenta.*/
         list &operator=(list other) {
             swap(other);
             return *this;
         }
 
-        /** Swaps the content of this list with the content of the rvalue list. */
+        /** Interschimba continutul acestei liste cu cel al listei de tip "rvalue". */
         list(list &&other) noexcept: count(0) {
             swap(other);
         }
 
-        /** Swaps the content of this list with another list.*/
+        /** Interschimba continutul acestei liste cu cel al listei date.*/
         void swap(list &other) {
             std::swap(first, other.first);
             std::swap(last, other.last);
             std::swap(count, other.count);
         }
 
-        /** Destroys the list object.*/
+        /** Distruge obiectul lista.*/
         ~list() {
             destroy_list();
             delete last;
         }
 
-        /** Returns an iterator that points to the beginning of the list. */
+        /** Returneaza un iterator ce reprezinta inceputul listei. */
         iterator begin() {
             return iterator(first);
         }
 
-        /** Returns an iterator that points to the end of the list. */
+        /** Returneaza un iterator ce reprezinta sfarsitul listei. Acest iterator nu trebuie accesat deoarece nu are o referinta la vreun element din lista.*/
         iterator end() {
             return iterator(last);
         }
 
-        /** Inserts the given value before the element at the specified position.
+        /** Insereaza un nou element cu valoarea data inainte de elementul de la pozitia specificata de iterator.
          *
-         * It returns an iterator to the newly inserted element. */
+         * Returneaza un iterator la noul element inserat. */
         iterator insert(iterator position, const type &value) {
             node *to_add = new node(value);
             node *next = position.h_node;
@@ -190,9 +190,9 @@ namespace dsl {
             return iterator(to_add);
         }
 
-        /** Erases the element at the specified position.
+        /** Sterge elementul de la pozitia specificata de iterator.
          *
-         * It returns an iterator to the element that followed the erased element.
+         * Returneaza un iterator la elementul ce era succesorul elementului sters.
          */
         iterator erase(iterator position) {
             node *to_erase = position.h_node;
@@ -209,33 +209,32 @@ namespace dsl {
             return iterator(next);
         }
 
-        /** Returns the number of elements in the list. */
+        /** Returneaza numarul de elemente din lista. */
         size_t size() const {
             return count;
         }
 
-        /** Checks if the list is empty. */
+        /** Verifica daca nu exista niciun element in lista. */
         bool empty() const {
             return count == 0;
         }
 
-        /** Removes all the elements from the list. */
+        /** Goleste lista. */
         void clear() {
             destroy_list();
             count = 0;
         }
 
-        /** Returns a reference to the first element.
+        /** Returneaza o referinta la primul element al listei.
          *
-         * Calling this function when the list is empty results in undefined behaviour. */
+         * Comportamentul acestei functii apelate cand lista este goala este indefinit.*/
         type &front() {
             return first->value;
         }
 
-        /**
-         * Returns a reference to the last element.
+        /** Returneaza o referinta la ultimul element al listei.
          *
-         * Calling this function when the list is empty results in undefined behaviour.*/
+         * Comportamentul acestei functii apelate cand lista este goala este indefinit.*/
 
         type &back() {
             return last->previous->value;
