@@ -419,7 +419,7 @@ namespace dsl {
             structure.insert(structure.root, structure.nil, key_value);
         }
 
-        /** Returns an iterator that points to the element with the given key. */
+        /** Returns an iterator that points to the element with the given key. If no element with the given key is found in the set, return the end iterator. */
         iterator find(const key &key_value) {
             return iterator(structure.find(structure.root, key_value), &structure);
         }
