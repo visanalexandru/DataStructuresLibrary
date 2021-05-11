@@ -19,6 +19,8 @@ namespace dsl {
      *
      * Elementele sunt organizate in "bucket"-uri pentru a se stoca valorile in functie de "valoarea hash" a cheii.
      *
+     * Se foloseste clasa std::vector pentru obiectul de tip "bucket".
+     *
      * Un articol ce explica sumar conceptul de tabela hash se poate gasi la https://infoarena.ro/tabele-hash-scurta-prezentare.
      *
      * @tparam key Tipul cheii unui element in tabela de dispersie.

@@ -9,12 +9,13 @@
 #include<functional>
 
 namespace dsl {
-    /** This is an implementation of a priority queue, using a heap structure.
+    /** Aceasta clasa este o implementare a unei cozi cu prioritati ce foloseste o structura de date de tip "heap".
      *
-     * It uses the std::vector container to hold the elements.
+     * Se foloseste clasa std::vector pentru a stoca elementele.
      *
-     * @tparam type The type of the value of an entry in the heap.
-     * @tparam compare A binary predicate that defines a strict weak ordering, used to order the elements.\n The expression compare(a,b) shall return true if a is considered to go before b.
+     * Un articol ce explica modul in care functioneaza structura de date de tip heap se poate gasi la https://infoarena.ro/heapuri.
+     * @tparam type Tipul valorii unui element in structura de tip "heap".
+     * @tparam compare O clasa ce reprezinta o functie binara ce defineste o ordonare de tip "mai mic strict", folosita pentru a ordona elementele.\n Expresia compare(a,b) trebuie sa returneze true daca a ar trebui sa se afle inaintea lui b.
      *
      */
     template<class type, class compare=std::less<type>>
@@ -85,7 +86,7 @@ namespace dsl {
         }
 
         /**
-         * Constructs the heap by inserting the elements in the range [first,last) and then sorting the heap.
+         * Construieste coada cu prioritati prin inserarea tuturor elementelor in intervalul [first,last) si sortarea structurii "heap".
          */
         template<class Iter>
         heap(Iter first, Iter last) {
@@ -101,21 +102,21 @@ namespace dsl {
         }
 
         /**
-         * Returns the number of elements in the heap.
+         * Returneaza numarul de elemente din coada cu prioritati.
          */
         size_t size() const {
             return count;
         }
 
         /**
-         * Checks if the heap is emtpy.
+         * Verifica daca nu exista niciun element in coada cu prioritati.
          */
         bool empty() const {
             return count == 0;
         }
 
         /**
-         * Inserts a new value into the heap.
+         * Insereaza o noua valoare in coada cu prioritati.
          */
         void push(type value) {
             data.push_back(value);
@@ -124,7 +125,7 @@ namespace dsl {
         }
 
         /**
-         * Removes the top element from the heap.
+         * Sterge primul element din coada, adica elementul cu prioritate maxima.
          */
         void pop() {
             data[1] = data[count];
@@ -134,14 +135,14 @@ namespace dsl {
         }
 
         /**
-         * Returns the value of the top element of the heap.
+         * Returneaza valoarea primului element din coada, adica elementul cu prioritate maxima.
          */
         type top() const {
             return data[1];
         }
 
         /**
-         * Removes all elements from the heap.
+         * Goleste coada cu prioritati.
          */
         void clear() {
             data.resize(1);
