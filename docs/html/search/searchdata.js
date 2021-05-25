@@ -16,9 +16,9 @@ var indexSectionNames =
 
 var indexSectionLabels =
 {
-  0: "All",
-  1: "Classes",
-  2: "Functions",
-  3: "Friends"
+  0: "Toate",
+  1: "Clase",
+  2: "Funcţii",
+  3: "Prieteni"
 };
 
